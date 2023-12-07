@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function EcbViolations() {
   const [bin, setBin] = useState('');
-  const [ecbViolations, setEcbViolations] = useState([]);
+  const [violations, setViolations] = useState([]);
 
   const fetchData = async () => {
     if (!bin) return;
@@ -11,7 +11,7 @@ function EcbViolations() {
       const url = `https://data.cityofnewyork.us/resource/6bgk-3dad.json?bin=${bin}`;
       const response = await fetch(url);
       const data = await response.json();
-      setEcbViolations(data);
+      setViolations(data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -37,9 +37,9 @@ function EcbViolations() {
           </label>
         </div>
         <ul>
-          {ecbViolations.map((violation) => (
+          {violations.map((violation) => (
             <li
-              key={violation.isn_dob_bis_extract}
+              key={violation.ecb_violation_number}
               className="bg-gray-200 p-4 mb-4 rounded shadow-md"
             >
               <p>
@@ -55,7 +55,61 @@ function EcbViolations() {
                 <strong>DOB Violation Number:</strong> {violation.dob_violation_number}
               </p>
               <p>
-                {/* Add other fields here */}
+                <strong>BIN:</strong> {violation.bin}
+              </p>
+              <p>
+                <strong>Boro:</strong> {violation.boro}
+              </p>
+              <p>
+                <strong>Block:</strong> {violation.block}
+              </p>
+              <p>
+                <strong>Lot:</strong> {violation.lot}
+              </p>
+              <p>
+                <strong>Hearing Date:</strong> {violation.hearing_date}
+              </p>
+              <p>
+                <strong>Hearing Time:</strong> {violation.hearing_time}
+              </p>
+              <p>
+                <strong>Served Date:</strong> {violation.served_date}
+              </p>
+              <p>
+                <strong>Issue Date:</strong> {violation.issue_date}
+              </p>
+              <p>
+                <strong>Severity:</strong> {violation.severity}
+              </p>
+              <p>
+                <strong>Violation Type:</strong> {violation.violation_type}
+              </p>
+              <p>
+                <strong>Respondent Name:</strong> {violation.respondent_name}
+              </p>
+              <p>
+                <strong>Violation Description:</strong> {violation.violation_description}
+              </p>
+              <p>
+                <strong>Penalty Imposed:</strong> {violation.penalty_imposed}
+              </p>
+              <p>
+                <strong>Amount Paid:</strong> {violation.amount_paid}
+              </p>
+              <p>
+                <strong>Balance Due:</strong> {violation.balance_due}
+              </p>
+              <p>
+                <strong>Infraction Code 1:</strong> {violation.infraction_code1}
+              </p>
+              <p>
+                <strong>Section Law Description 1:</strong> {violation.section_law_description1}
+              </p>
+              <p>
+                <strong>Aggravated Level:</strong> {violation.aggravated_level}
+              </p>
+              <p>
+                <strong>Hearing Status:</strong> {violation.hearing_status}
               </p>
             </li>
           ))}
