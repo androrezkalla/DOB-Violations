@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import './App.css';
 
 function DobViolations() {
   const [bin, setBin] = useState('');
   const [violations, setViolations] = useState([]);
   const [filter, setFilter] = useState('all'); // Default filter: all
+  const searchClicked = useRef(false);
 
   const fetchData = async () => {
-    if (!bin) return;
+    if (!bin || !searchClicked.current) return;
 
     try {
       let url = `https://data.cityofnewyork.us/resource/3h2n-5cm9.json?bin=${bin}`;
@@ -27,11 +29,30 @@ function DobViolations() {
 
   useEffect(() => {
     fetchData();
-  }, [bin, filter]);
+  }, [bin, filter, searchClicked]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
   };
+
+  const handleSearch = () => {
+    searchClicked.current = true;
+    fetchData();
+  };
+  
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(violations);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Violations');
+    XLSX.writeFile(wb, 'dob_violations.xlsx');
+  };
+  
 
 
   return (
@@ -45,9 +66,16 @@ function DobViolations() {
               type="text"
               value={bin}
               onChange={(e) => setBin(e.target.value)}
+              onKeyPress={handleKeyPress}
               className="ml-2 border border-gray-300 px-3 py-2 rounded focus:outline-none focus:border-blue-500"
             />
           </label>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
         <div className="mb-4">
           <label className="mr-4">Filter By:</label>
@@ -85,6 +113,12 @@ function DobViolations() {
         <p className="text-lg font-bold mb-4">
           Violation Count: {violations.length}
         </p>
+        <button
+            className="bg-green-500 text-white mb-5 px-4 py-2 rounded "
+            onClick={exportToExcel}
+          >
+            Export to Excel
+          </button>
         <ul>
           {violations.map((violation) => (
             <li
