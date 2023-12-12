@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import DobViolations from './dobviolations';
-import EcbViolations from './ecbviolations';
+import DobViolations from './DobViolations';
+import EcbViolations from './EcbViolations';
 import './App.css';
 
 const Navbar = () => {
