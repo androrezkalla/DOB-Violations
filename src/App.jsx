@@ -6,6 +6,7 @@ import EcbViolations from './EcbViolations';
 import FDNYViolations from './FDNYViolations';
 import HomePage from './HomePage';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import './App.css';
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
             <Route path="/fdny" element={<FDNYViolations />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </Router>
   );
