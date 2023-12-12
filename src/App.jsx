@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import DobViolations from './DobViolations';
 import EcbViolations from './EcbViolations';
+import FDNYViolations from './FDNYViolations';
 import './App.css';
 
 const Navbar = () => {
@@ -17,6 +18,9 @@ const Navbar = () => {
           </Link>
           <Link to="/ecb" className="hover:text-gray-300">
             ECB Violations
+          </Link>
+          <Link to="/fdny" className='hover:text-gray-300'>
+            FDNY Violations
           </Link>
         </div>
       </div>
@@ -34,6 +38,7 @@ const App = () => {
             <Route path="/" element={<h1>Welcome to Violations App</h1>} />
             <Route path="/dob" element={<DobViolations />} />
             <Route path="/ecb" element={<EcbViolations />} />
+            <Route path="/fdny" element={<FDNYViolations />} />
           </Routes>
         </div>
       </div>
