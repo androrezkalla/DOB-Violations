@@ -18,6 +18,15 @@ The project utilizes NYC Open Data to fetch and display DOB and ECB violations. 
   - Filter violations by status (Active, Written Off, etc.).
   - Comprehensive details about each violation.
 
+- **FDNY Violations:**
+  - Search FDNY violations by BIN.
+  - Filter violations by status (Open, Closed, etc.).
+  - Comprehensive details about each violation.
+
+- **Excel Exporting Violations:**
+  - Allows user to export their current search query to excel.
+  - File downloads locally as .xlsx
+ 
 - **Navigation:**
   - Switch between DOB and ECB violations seamlessly.
   - User-friendly interface for a smooth experience.
@@ -26,7 +35,8 @@ The project utilizes NYC Open Data to fetch and display DOB and ECB violations. 
 
 - [React](https://reactjs.org/) - JavaScript library for building user interfaces.
 - [NYC Open Data](https://opendata.cityofnewyork.us/) - Source of DOB and ECB violations data.
-
+- Tailwind CSS
+- XLSX (for Excel export)
 
 ## License
 
@@ -35,3 +45,7 @@ This project is licensed under the [MIT License](LICENSE).
 ## Acknowledgments
 
 - NYC Open Data
+
+## Author
+
+Andro Rezkalla - 2023. All rights reserved.
