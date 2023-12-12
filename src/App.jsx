@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import DobViolations from './DobViolations';
 import EcbViolations from './EcbViolations';
 import FDNYViolations from './FDNYViolations';
+import HomePage from './HomePage';
 import './App.css';
 
 const Navbar = () => {
@@ -35,7 +36,7 @@ const App = () => {
         <Navbar />
         <div className="container mx-auto mt-8">
           <Routes>
-            <Route path="/" element={<h1>Welcome to Violations App</h1>} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/dob" element={<DobViolations />} />
             <Route path="/ecb" element={<EcbViolations />} />
             <Route path="/fdny" element={<FDNYViolations />} />
