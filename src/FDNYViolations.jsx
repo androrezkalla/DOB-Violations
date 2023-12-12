@@ -50,7 +50,7 @@ function FDNYViolations() {
     const ws = XLSX.utils.json_to_sheet(violations);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Violations');
-    XLSX.writeFile(wb, 'dob_violations.xlsx');
+    XLSX.writeFile(wb, 'fdny_violations.xlsx');
   };
   
 
