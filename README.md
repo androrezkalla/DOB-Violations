@@ -23,13 +23,10 @@ The project utilizes NYC Open Data to fetch and display DOB and ECB violations. 
   - Filter violations by status (Open, Closed, etc.).
   - Comprehensive details about each violation.
 
-- **Excel Exporting Violations:**
+- **Excel Exporting:**
   - Allows user to export their current search query to excel.
   - File downloads locally as .xlsx
  
-- **Navigation:**
-  - Switch between DOB and ECB violations seamlessly.
-  - User-friendly interface for a smooth experience.
 
 ## Built With
 
