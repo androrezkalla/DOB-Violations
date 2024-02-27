@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
-import './App.css';
 
-function DobViolations() {
+function SearchComponent({ url }) {
   const [binList, setBinList] = useState('');
   const [violations, setViolations] = useState([]);
   const [filter, setFilter] = useState('all'); // Default filter: all
@@ -16,14 +15,14 @@ function DobViolations() {
     try {
       const allViolations = [];
       for (const bin of binArray) {
-        let url = `https://data.cityofnewyork.us/resource/3h2n-5cm9.json?bin=${bin}`;
+        let apiUrl = `${url}?bin=${bin}`;
 
         // Add filtering based on the selected option
         if (filter !== 'all') {
-          url += `&violation_category=${filter}`;
+          apiUrl += `&violation_category=${filter}`;
         }
 
-        const response = await fetch(url);
+        const response = await fetch(apiUrl);
         const data = await response.json();
         allViolations.push(...data);
       }
@@ -45,7 +44,7 @@ function DobViolations() {
     searchClicked.current = true;
     fetchData();
   };
-  
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -123,71 +122,14 @@ function DobViolations() {
           Violation Count: {violations.length}
         </p>
         <button
-            className="bg-green-500 text-white mb-5 px-4 py-2 rounded "
-            onClick={exportToExcel}
-          >
-            Export to Excel
-          </button>
-        <ul>
-          {violations.map((violation) => (
-            <li
-            key={violation.isn_dob_bis_viol}
-            className="bg-gray-200 p-4 mb-4 rounded shadow-md"
-          >
-            <p>
-              <strong>ISN DOB BIS Viol:</strong> {violation.isn_dob_bis_viol}
-            </p>
-            <p>
-              <strong>Boro:</strong> {violation.boro}
-            </p>
-            <p>
-              <strong>Bin:</strong> {violation.bin}
-            </p>
-            <p>
-              <strong>Block:</strong> {violation.block}
-            </p>
-            <p>
-              <strong>Lot:</strong> {violation.lot}
-            </p>
-            <p>
-              <strong>Issue Date:</strong> {violation.issue_date}
-            </p>
-            <p>
-              <strong>Violation Type Code:</strong> {violation.violation_type_code}
-            </p>
-            <p>
-              <strong>Violation Number:</strong> {violation.violation_number}
-            </p>
-            <p>
-              <strong>House Number:</strong> {violation.house_number}
-            </p>
-            <p>
-              <strong>Street:</strong> {violation.street}
-            </p>
-            <p>
-              <strong>Disposition Date:</strong> {violation.disposition_date}
-            </p>
-            <p>
-              <strong>Device Number:</strong> {violation.device_number}
-            </p>
-            <p>
-              <strong>Description:</strong> {violation.description}
-            </p>
-            <p>
-              <strong>Number:</strong> {violation.number}
-            </p>
-            <p>
-              <strong>Violation Category:</strong> {violation.violation_category}
-            </p>
-            <p>
-              <strong>Violation Type:</strong> {violation.violation_type}
-            </p>
-          </li>
-          ))}
-        </ul>
+          className="bg-green-500 text-white mb-5 px-4 py-2 rounded "
+          onClick={exportToExcel}
+        >
+          Export to Excel
+        </button>
       </div>
     </div>
   );
 }
 
-export default DobViolations;
+export default SearchComponent;

@@ -5,7 +5,7 @@ import './App.css';
 function FDNYViolations() {
   const [bin, setBin] = useState('');
   const [violations, setViolations] = useState([]);
-  const [filter, setFilter] = useState('all'); // Default filter: all
+  const [filter, setFilter] = useState('all'); 
   const searchClicked = useRef(false);
 
   const fetchData = async () => {
@@ -14,7 +14,6 @@ function FDNYViolations() {
     try {
       let url = `https://data.cityofnewyork.us/resource/bi53-yph3.json?bin=${bin}`;
 
-      // Add filtering based on the selected option
       if (filter !== 'all') {
         url += `&action=${filter}`;
       }
@@ -170,7 +169,6 @@ function FDNYViolations() {
               <p>
                 <strong>ZIP Code:</strong> {violation.zipcode}
               </p>
-              {/* Add more fields as needed */}
             </li>
           ))}
         </ul>
