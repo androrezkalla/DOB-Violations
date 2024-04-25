@@ -2,25 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as XLSX from 'xlsx';
 
 function EcbViolations() {
-  const [bin, setBin] = useState('');
+  const [binList, setBinList] = useState('');
   const [violations, setViolations] = useState([]);
-  const [filter, setFilter] = useState('all'); // Default filter: all
+  const [filter, setFilter] = useState('all');
   const searchClicked = useRef(false);
 
   const fetchData = async () => {
-    if (!bin || !searchClicked.current) return;
+    if (!binList || !searchClicked.current) return;
+
+    const binArray = binList.split(',').map(bin => bin.trim());
 
     try {
-      let url = `https://data.cityofnewyork.us/resource/6bgk-3dad.json?bin=${bin}`;
+      const allViolations = [];
+      for (const bin of binArray) {
+        let url = `https://data.cityofnewyork.us/resource/6bgk-3dad.json?bin=${bin}`;
 
-      // Add filtering based on the selected option
-      if (filter !== 'all') {
-        url += `&ecb_violation_status=${filter}`;
+        if (filter !== 'all') {
+          url += `&ecb_violation_status=${filter}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+        allViolations.push(...data);
       }
-
-      const response = await fetch(url);
-      const data = await response.json();
-      setViolations(data);
+      setViolations(allViolations);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -28,7 +33,7 @@ function EcbViolations() {
 
   useEffect(() => {
     fetchData();
-  }, [bin, filter, searchClicked]);
+  }, [binList, filter, searchClicked]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
@@ -38,7 +43,7 @@ function EcbViolations() {
     searchClicked.current = true;
     fetchData();
   };
-  
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -46,6 +51,11 @@ function EcbViolations() {
   };
 
   const exportToExcel = () => {
+    if (violations.length === 0) {
+      console.warn('No data to export.');
+      return;
+    }
+
     const ws = XLSX.utils.json_to_sheet(violations);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Violations');
@@ -58,11 +68,11 @@ function EcbViolations() {
         <h2 className="text-3xl font-bold mb-6 text-gray-800">ECB Violations</h2>
         <div className="flex space-x-4 mb-4">
           <label className="flex items-center">
-            Enter BIN:
+            Enter BIN(s) separated by comma:
             <input
               type="text"
-              value={bin}
-              onChange={(e) => setBin(e.target.value)}
+              value={binList}
+              onChange={(e) => setBinList(e.target.value)}
               onKeyPress={handleKeyPress}
               className="ml-2 border border-gray-300 px-3 py-2 rounded focus:outline-none focus:border-blue-500"
             />
@@ -97,7 +107,7 @@ function EcbViolations() {
             </button>
             <button
               className={`${
-                filter === ('RESOLVE')
+                filter === 'RESOLVE'
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-300 text-gray-800'
               } px-4 py-2 rounded`}
@@ -117,7 +127,7 @@ function EcbViolations() {
           Export to Excel
         </button>
         <ul>
-        {violations.map((violation) => (
+          {violations.map((violation) => (
             <li
               key={violation.ecb_violation_number}
               className="bg-gray-200 p-4 mb-4 rounded shadow-md"
@@ -200,3 +210,4 @@ function EcbViolations() {
 }
 
 export default EcbViolations;
+

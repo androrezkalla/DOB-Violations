@@ -3,24 +3,30 @@ import * as XLSX from 'xlsx';
 import './App.css';
 
 function FDNYViolations() {
-  const [bin, setBin] = useState('');
+  const [binList, setBinList] = useState('');
   const [violations, setViolations] = useState([]);
-  const [filter, setFilter] = useState('all'); 
+  const [filter, setFilter] = useState('all');
   const searchClicked = useRef(false);
 
   const fetchData = async () => {
-    if (!bin || !searchClicked.current) return;
+    if (!binList || !searchClicked.current) return;
+
+    const binArray = binList.split(',').map(bin => bin.trim());
 
     try {
-      let url = `https://data.cityofnewyork.us/resource/bi53-yph3.json?bin=${bin}`;
+      const allViolations = [];
+      for (const bin of binArray) {
+        let url = `https://data.cityofnewyork.us/resource/bi53-yph3.json?bin=${bin}`;
 
-      if (filter !== 'all') {
-        url += `&action=${filter}`;
+        if (filter !== 'all') {
+          url += `&action=${filter}`;
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+        allViolations.push(...data);
       }
-
-      const response = await fetch(url);
-      const data = await response.json();
-      setViolations(data);
+      setViolations(allViolations);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -28,7 +34,7 @@ function FDNYViolations() {
 
   useEffect(() => {
     fetchData();
-  }, [bin, filter, searchClicked]);
+  }, [binList, filter, searchClicked]);
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
@@ -38,7 +44,7 @@ function FDNYViolations() {
     searchClicked.current = true;
     fetchData();
   };
-  
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -46,13 +52,16 @@ function FDNYViolations() {
   };
 
   const exportToExcel = () => {
+    if (violations.length === 0) {
+      console.warn('No data to export.');
+      return;
+    }
+
     const ws = XLSX.utils.json_to_sheet(violations);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Violations');
     XLSX.writeFile(wb, 'fdny_violations.xlsx');
   };
-  
-
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -60,11 +69,11 @@ function FDNYViolations() {
         <h2 className="text-3xl font-bold mb-6 text-gray-800">FDNY Violations</h2>
         <div className="flex space-x-4 mb-4">
           <label className="flex items-center">
-            Enter BIN:
+            Enter BIN(s) separated by comma:
             <input
               type="text"
-              value={bin}
-              onChange={(e) => setBin(e.target.value)}
+              value={binList}
+              onChange={(e) => setBinList(e.target.value)}
               onKeyPress={handleKeyPress}
               className="ml-2 border border-gray-300 px-3 py-2 rounded focus:outline-none focus:border-blue-500"
             />
@@ -99,7 +108,7 @@ function FDNYViolations() {
             </button>
             <button
               className={`${
-                filter === ('CLOSED')
+                filter === 'CLOSED'
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-300 text-gray-800'
               } px-4 py-2 rounded`}
@@ -113,12 +122,12 @@ function FDNYViolations() {
           Violation Count: {violations.length}
         </p>
         <button
-            className="bg-green-500 text-white mb-5 px-4 py-2 rounded "
-            onClick={exportToExcel}
-          >
-            Export to Excel
-          </button>
-          <ul>
+          className="bg-green-500 text-white mb-5 px-4 py-2 rounded"
+          onClick={exportToExcel}
+        >
+          Export to Excel
+        </button>
+        <ul>
           {violations.map((violation) => (
             <li
               key={violation.vio_id}
