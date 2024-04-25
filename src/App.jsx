@@ -14,7 +14,7 @@ const App = () => {
     <Router>
       <div>
         <Navbar />
-        <div className="container mx-auto mt-8">
+        <div>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/dob" element={<DobViolations />} />
